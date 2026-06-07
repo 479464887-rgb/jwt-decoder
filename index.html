@@ -1,2 +1,150 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Jwt Decoder — DevKit Tools</title><meta name="description" content="在线 JWT Decode器 - 解析 JSON Web Token，查看 Header/Payload/Signature"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh;display:flex;flex-direction:column}header{background:#161b22;border-bottom:1px solid #30363d;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}.logo{font-size:18px;font-weight:700;color:#58a6ff}.logo span{color:#f0c040}header .badge{font-size:10px;background:#daa520;color:#fff;padding:2px 8px;border-radius:10px;margin-left:8px}main{max-width:700px;margin:0 auto;padding:32px 24px;flex:1}.tool-wrapper{padding:20px 0}footer{padding:16px 24px;border-top:1px solid #21262d;text-align:center;font-size:12px;color:#484f58}footer a{color:#58a6ff;text-decoration:none;margin:0 8px}.btn-primary:hover{background:#2ea043!important}.btn:hover{background:#30363d!important}input:focus,textarea:focus,select:focus{outline:none;border-color:#58a6ff!important}.btn{font-family:inherit}</style></head><body><header><div class="logo">🛠 <span>Dev</span>Kit<span class="badge">BETA</span></div><div style="font-size:11px;color:#8b949e">🔒 Processed locally · 数据不Upload</div></header><main><h1 style="font-size:24px;margin-bottom:4px">JWT Decoder</h1><p style="color:#8b949e;font-size:14px;margin-bottom:8px">在线 JWT Decode器 - 解析 JSON Web Token，查看 Header/Payload/Signature</p><div class="tool-wrapper"><textarea id="jwt-input" placeholder="粘贴 JWT Token...&#10;eyJhbGciOiJIUzI1NiIs..." rows="4" style="width:100%;padding:16px;font-size:13px;border:1px solid #30363d;border-radius:8px;background:#0d1117;color:#c9d1d9;resize:vertical;outline:none;font-family:mono;line-height:1.6"></textarea><div style="margin:12px 0;display:flex;gap:8px"><button class="btn btn-primary" style="padding:10px 24px;background:#238636;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px" onclick="decodeJWT()">🔍 Decode</button><button class="btn" style="padding:10px 20px;background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;cursor:pointer;font-size:13px" onclick="document.getElementById('jwt-input').value='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';decodeJWT()">📋 示例</button></div><div id="jwt-result" style="display:grid;gap:12px"><span style="color:#8b949e">Input JWT 查看Decode内容</span></div><div id="jwt-warn" style="margin-top:12px;padding:12px;background:#d2992220;border:1px solid #d29922;border-radius:8px;font-size:12px;color:#d29922;display:none">⚠ 签名Validate状态无法Validate（需密钥）。请勿在生产环境信任未Validate的 JWT。</div></div></main><footer><a href="https://github.com/479464887-rgb/jwt-decoder">GitHub</a><span>·</span><span>© 2026 DevKit</span></footer><script>function decodeJWT(){const t=document.getElementById('jwt-input').value.trim();const r=document.getElementById('jwt-result');const w=document.getElementById('jwt-warn');if(!t){r.innerHTML='<span style=color:#8b949e>Input JWT</span>';return}const parts=t.split('.');if(parts.length!==3){r.innerHTML='<span style=color:#f85149>无效的 JWT（需要3段，用.分隔）</span>';return}const names=['HEADER','PAYLOAD','SIGNATURE'];const colors=['#58a6ff','#3fb950','#f85149'];let html='';for(let i=0;i<3;i++){try{const decoded=atob(parts[i].replace(/-/g,'+').replace(/_/g,'/'));try{const json=JSON.parse(decoded);html+=`<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden"><div style="background:#21262d;padding:8px 16px;font-size:12px;font-weight:600;color:${colors[i]}">${names[i]}</div><pre style="padding:16px;font-size:12px;line-height:1.6;overflow:auto;margin:0">${JSON.stringify(json,null,2)}</pre></div>`}catch{html+=`<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden"><div style="background:#21262d;padding:8px 16px;font-size:12px;font-weight:600;color:${colors[i]}">${names[i]}</div><div style="padding:16px;font-family:mono;font-size:12px;color:#8b949e;word-break:break-all">${decoded}</div></div>`}}catch{html+=`<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden"><div style="background:#21262d;padding:8px 16px;font-size:12px;font-weight:600;color:${colors[i]}">${names[i]}</div><div style="padding:16px;font-family:mono;font-size:12px;color:#f85149;word-break:break-all">${parts[i]}</div></div>`}}r.innerHTML=html;w.style.display='block'}
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Jwt Decoder — DevKit Tools</title>
+  <meta name="description" content="在线 JWT Decode器 - 解析 JSON Web Token，查看 Header/Payload/Signature">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column
+    }
+
+    header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #58a6ff
+    }
+
+    .logo span {
+      color: #f0c040
+    }
+
+    header .badge {
+      font-size: 10px;
+      background: #daa520;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px
+    }
+
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      flex: 1
+    }
+
+    .tool-wrapper {
+      padding: 20px 0
+    }
+
+    footer {
+      padding: 16px 24px;
+      border-top: 1px solid #21262d;
+      text-align: center;
+      font-size: 12px;
+      color: #484f58
+    }
+
+    footer a {
+      color: #58a6ff;
+      text-decoration: none;
+      margin: 0 8px
+    }
+
+    .btn-primary:hover {
+      background: #2ea043 !important
+    }
+
+    .btn:hover {
+      background: #30363d !important
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #58a6ff !important
+    }
+
+    .btn {
+      font-family: inherit
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">🛠 <span>Dev</span>Kit<span class="badge">BETA</span></div>
+    <div style="font-size:11px;color:#8b949e">🔒 Processed locally · 数据不Upload</div>
+  </header>
+  <main>
+    <h1 style="font-size:24px;margin-bottom:4px">JWT Decoder</h1>
+    <p style="color:#8b949e;font-size:14px;margin-bottom:8px">在线 JWT Decode器 - 解析 JSON Web Token，查看 Header/Payload/Signature</p>
+    <div class="tool-wrapper"><textarea id="jwt-input" placeholder="粘贴 JWT Token...&#10;eyJhbGciOiJIUzI1NiIs..." rows="4" style="width:100%;padding:16px;font-size:13px;border:1px solid #30363d;border-radius:8px;background:#0d1117;color:#c9d1d9;resize:vertical;outline:none;font-family:mono;line-height:1.6"></textarea>
+      <div style="margin:12px 0;display:flex;gap:8px"><button class="btn btn-primary" style="padding:10px 24px;background:#238636;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px" onclick="decodeJWT()">🔍 Decode</button><button class="btn" style="padding:10px 20px;background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;cursor:pointer;font-size:13px" onclick="document.getElementById('jwt-input').value='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';decodeJWT()">📋 示例</button></div>
+      <div id="jwt-result" style="display:grid;gap:12px"><span style="color:#8b949e">Input JWT 查看Decode内容</span></div>
+      <div id="jwt-warn" style="margin-top:12px;padding:12px;background:#d2992220;border:1px solid #d29922;border-radius:8px;font-size:12px;color:#d29922;display:none">⚠ 签名Validate状态无法Validate（需密钥）。请勿在生产环境信任未Validate的 JWT。</div>
+    </div>
+  </main>
+  <footer><a href="https://github.com/479464887-rgb/jwt-decoder">GitHub</a><span>·</span><span>© 2026 DevKit</span></footer>
+  <script>
+    function decodeJWT() {
+      const t = document.getElementById('jwt-input').value.trim();
+      const r = document.getElementById('jwt-result');
+      const w = document.getElementById('jwt-warn');
+      if (!t) {
+        r.innerHTML = '<span style=color:#8b949e>Input JWT</span>';
+        return
+      }
+      const parts = t.split('.');
+      if (parts.length !== 3) {
+        r.innerHTML = '<span style=color:#f85149>无效的 JWT（需要3段，用.分隔）</span>';
+        return
+      }
+      const names = ['HEADER', 'PAYLOAD', 'SIGNATURE'];
+      const colors = ['#58a6ff', '#3fb950', '#f85149'];
+      let html = '';
+      for (let i = 0; i < 3; i++) {
+        try {
+          const decoded = atob(parts[i].replace(/-/g, '+').replace(/_/g, '/'));
+          try {
+            const json = JSON.parse(decoded);
+            html += `<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden"><div style="background:#21262d;padding:8px 16px;font-size:12px;font-weight:600;color:${colors[i]}">${names[i]}</div><pre style="padding:16px;font-size:12px;line-height:1.6;overflow:auto;margin:0">${JSON.stringify(json,null,2)}</pre></div>`
+          } catch {
+            html += `<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden"><div style="background:#21262d;padding:8px 16px;font-size:12px;font-weight:600;color:${colors[i]}">${names[i]}</div><div style="padding:16px;font-family:mono;font-size:12px;color:#8b949e;word-break:break-all">${decoded}</div></div>`
+          }
+        } catch {
+          html += `<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden"><div style="background:#21262d;padding:8px 16px;font-size:12px;font-weight:600;color:${colors[i]}">${names[i]}</div><div style="padding:16px;font-family:mono;font-size:12px;color:#f85149;word-break:break-all">${parts[i]}</div></div>`
+        }
+      }
+      r.innerHTML = html;
+      w.style.display = 'block'
+    }
+  </script>
+</body>
+
+</html>
